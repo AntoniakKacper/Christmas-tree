@@ -21,9 +21,9 @@ camera.position.setZ(30);
 
 renderer.render(scene, camera);
 
-const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+const geometry = new THREE.CylinderGeometry(5, 5, 10, 32);
 const material = new THREE.MeshBasicMaterial({
-  color: 0xff6347,
+  color: 0x781c1c,
   wireframe: true,
 });
 const torus = new THREE.Mesh(geometry, material);
@@ -31,3 +31,13 @@ const torus = new THREE.Mesh(geometry, material);
 scene.add(torus);
 
 renderer.render(scene, camera);
+
+const animate = () => {
+  requestAnimationFrame(animate);
+  // torus.rotation.x += 0.01;
+  torus.rotation.y += 0.005;
+
+  renderer.render(scene, camera);
+};
+
+animate();
