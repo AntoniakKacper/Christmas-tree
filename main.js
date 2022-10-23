@@ -1,96 +1,57 @@
 import "./style.css";
-// import { animate } from './tree/trunk';
+import trunk from './tree/trunk';
+import star from './tree/star.js';
+import renderer from './core/renderer.js';
+import camera from './core/camera.js';
+import light from './core/light.js';
+import ambientLight from './core/ambientLight.js';
+import { AxesHelper, BufferGeometry, Fog, PointLightHelper, Scene } from 'three';
 
-import * as THREE from "three";
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import ground from './tree/ground.js';
+import createBranch from './tree/branch.js';
+import { renderTree } from './tree/treeRenderer.js';
+import { TREE_HEIGHT } from './constans.js';
 
-const scene = new THREE.Scene();
-
-const textureLoader = new THREE.TextureLoader();
-
-const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
-
-const renderer = new THREE.WebGLRenderer({
-  canvas: document.querySelector("#bg"),
-});
-
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(30);
+const scene = new Scene();
 
 renderer.render(scene, camera);
 
-const trunkGeometry = new THREE.CylinderGeometry(5, 5, 10, 32);
-const trunkMaterial = new THREE.MeshBasicMaterial({
-  color: 0x781c1c,
-});
-const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+// const branch = createBranch();
+// branch.position.set(0, 5, 9.5);
 
-const branchGeometry = new THREE.CylinderGeometry(1, 1, 15, 32);
-const branchMaterial = new THREE.MeshBasicMaterial({
-  color: 0x0e7500,
-});
-
-const branch = new THREE.Mesh(branchGeometry, branchMaterial);
-
-
-const starGeometry = new THREE.TorusKnotGeometry( 10, 2, 64, 8, 20, 3 );
-const starMaterial = new THREE.MeshStandardMaterial( { color: 0xffff00 } );
-const star = new THREE.Mesh( starGeometry, starMaterial );
-star.scale.set(0.2,0.2,0.2);
-star.position.set(0, 50, 0);
-
-const light = new THREE.PointLight( 0xffffff );
-light.position.set(20, 2, 5);
-
-const ambientLight = new THREE.AmbientLight(0xffffff, 1000);
-scene.add(light, ambientLight);
-
-const texture = new THREE.TextureLoader().load('images/background.jpeg');
-scene.background = texture;
-
-const lightHelper = new THREE.PointLightHelper(light);
-scene.add(lightHelper);
-
-scene.add( light );
-scene.add( star );
-scene.fog = new THREE.Fog(0xcce0ff, 500, 10000);
-
-scene.add(trunk);
-// scene.add(branch);
-
-renderer.render(scene, camera);
-
+const lightHelper = new PointLightHelper(light);
+const axesHelper = new AxesHelper( 5 );
+axesHelper.position.set(10, 10, 10)
+scene.add( axesHelper );
+// const texture = new THREE.TextureLoader().load('images/background.jpeg');
+// scene.background = texture;
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const plane = new THREE.Mesh(
-  new THREE.PlaneGeometry(100, 100, 10, 10),
-  new THREE.MeshBasicMaterial( {
-    map: textureLoader.load("ground.jpeg")
-   } ),
-)
+scene.add(light, ambientLight);
+scene.add(lightHelper);
+scene.add( light );
 
-plane.rotation.set(-Math.PI / 2, 0, 0)
-plane.receiveShadow = true
-scene.add(plane)
+scene.add(renderTree(TREE_HEIGHT))
+// scene.add(branch);
+// scene.add( star );
 
+scene.add(ground)
+scene.fog = new Fog(0xcce0ff, 500, 10000);
+
+renderer.render(scene, camera);
+//
+//
+//
 const animate2 = () => {
   requestAnimationFrame(animate2);
   // torus.rotation.x += 0.01;
-  trunk.rotation.y += 0.005;
-  star.rotation.y += 0.005;
+  // trunk.rotation.y += 0.005;
+  // star.rotation.y += 0.005;
 
   controls.update();
-
   renderer.render(scene, camera);
 };
 
 animate2();
-
-// animate(renderer, scene, camera);

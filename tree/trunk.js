@@ -1,22 +1,14 @@
 import * as THREE from "three";
+import { TREE_HEIGHT } from '../constans.js';
 
-const geometry = new THREE.CylinderGeometry(5, 5, 10, 32);
-const material = new THREE.MeshBasicMaterial({
+
+
+const trunkGeometry = new THREE.CylinderGeometry(0.2, 1.5, TREE_HEIGHT, 80);
+const trunkMaterial = new THREE.MeshBasicMaterial({
   color: 0x781c1c,
-  wireframe: true,
 });
-const trunk = new THREE.Mesh(geometry, material);
+const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+trunk.position.set(0, TREE_HEIGHT / 2 ,0);
 
-// scene.add(trunk);
 
-// renderer.render(scene, camera);
-
-export const animate = (renderer, scene, camera) => {
-  requestAnimationFrame(animate);
-  // torus.rotation.x += 0.01;
-  trunk.rotation.y += 0.005;
-
-  renderer.render(scene, camera);
-};
-
-// animate();
+export default trunk;
