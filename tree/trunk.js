@@ -3,7 +3,7 @@ import { TREE_HEIGHT } from '../constans.js';
 
 
 
-const trunkGeometry = new THREE.CylinderGeometry(0.2, 1.5, TREE_HEIGHT, 80);
+const trunkGeometry = new THREE.CylinderGeometry(0.05, 1.5, TREE_HEIGHT, 80);
 const trunkMaterial = new THREE.MeshBasicMaterial({
   color: 0x781c1c,
 });

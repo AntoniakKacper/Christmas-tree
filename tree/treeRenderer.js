@@ -1,4 +1,4 @@
-import { TREE_HEIGHT } from '../constans.js';
+import { BRANCH_WIDTH, LEVELS, TREE_HEIGHT } from '../constans.js';
 import { Group, Object3D, Vector3 } from 'three';
 import trunk from './trunk.js';
 import createBranch from './branch.js';
@@ -13,10 +13,11 @@ const rotateObject = (object, degreeX = 90, degreeY= 0, degreeZ=0) => {
 }
 
 const renderBranch = (levelNumber, treeHeight) => {
-    const branchWidth = 10 - levelNumber * 0.18;
+    const branchWidth = BRANCH_WIDTH - levelNumber / treeHeight * BRANCH_WIDTH;
     const branch = createBranch(branchWidth);
 
-    const levelPositionY = - treeHeight/2  + (treeHeight * 0.1) + levelNumber/2;
+    const levelPositionY = - TREE_HEIGHT/2 +  (TREE_HEIGHT * 0.1) + levelNumber/LEVELS;
+    // const levelPositionY = - TREE_HEIGHT/2
     const levelPositionZ = branchWidth / 2;
     branch.position.set(0 ,levelPositionZ, 0);
    
@@ -38,11 +39,11 @@ const renderBranch = (levelNumber, treeHeight) => {
 
 const renderLevel = (levelNumber, treeHeight) => {
     const groupLevel = new Object3D();
-    const branchesOnLevel = treeHeight - levelNumber - 5;
-    for (let branchNumber = 0; branchNumber < 100; branchNumber++) {
+    const branchesOnLevel = (treeHeight - levelNumber) * 2;
+    for (let branchNumber = 0; branchNumber < branchesOnLevel; branchNumber++) {
         let branch = renderBranch(levelNumber, treeHeight);
 
-        rotateObject(branch, 90,  0, branchNumber * 5);
+        rotateObject(branch, 90,  0, (360/branchesOnLevel) * branchNumber);
         groupLevel.add(branch);
     }
     return groupLevel;
@@ -50,8 +51,9 @@ const renderLevel = (levelNumber, treeHeight) => {
 
 
 export const renderTree = (treeHeight = TREE_HEIGHT) => {
-    for(let treeLevel = 0; treeLevel < treeHeight * 2 - 5; treeLevel++) {
-        trunk.add(renderLevel(treeLevel, treeHeight))
+    const maxNumberOfLevels = treeHeight * LEVELS * 0.9;
+    for(let treeLevel = 0; treeLevel < maxNumberOfLevels; treeLevel++) {
+        trunk.add(renderLevel(treeLevel, maxNumberOfLevels))
     }
     return trunk;
 }

@@ -5,7 +5,7 @@ const branchMaterial = new MeshBasicMaterial({
 });
 
 const createBranch = (height) => {
-    const branchGeometry = new CylinderGeometry( 0.05, 0.3, height, 50 );
+    const branchGeometry = new CylinderGeometry( 0.01, 0.3, height, 50 );
     return new Mesh(branchGeometry, branchMaterial);
 }
 
