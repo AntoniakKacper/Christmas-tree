@@ -6,7 +6,7 @@ groundTexture.wrapS = THREE.RepeatWrapping;
 groundTexture.wrapT = THREE.RepeatWrapping;
 groundTexture.repeat.set(3, 3);
 const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(100, 100, 10, 10),
+    new THREE.PlaneGeometry(1000, 1000, 100, 100),
     new THREE.MeshBasicMaterial( {
         map: groundTexture
     })

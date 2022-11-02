@@ -1,6 +1,5 @@
-import { BRANCH_WIDTH, LEVELS, TREE_HEIGHT } from '../constans.js';
 import { Group, Object3D, Vector3 } from 'three';
-import trunk from './trunk.js';
+import createTrunk from './trunk.js';
 import createBranch from './branch.js';
 
 import renderer from '../core/renderer.js';
@@ -12,18 +11,18 @@ const rotateObject = (object, degreeX = 90, degreeY= 0, degreeZ=0) => {
 
 }
 
-const renderBranch = (levelNumber, treeHeight) => {
-    const branchWidth = BRANCH_WIDTH - levelNumber / treeHeight * BRANCH_WIDTH;
-    const branch = createBranch(branchWidth);
+const renderBranch = (levelNumber, maxNumberOfLevels, branchWidth, density, treeHeight) => {
+    const random = Math.random();
+    const branchWidthOnLevel = (branchWidth - levelNumber / maxNumberOfLevels * branchWidth) * random;
 
-    const levelPositionY = - TREE_HEIGHT/2 +  (TREE_HEIGHT * 0.1) + levelNumber/LEVELS;
-    // const levelPositionY = - TREE_HEIGHT/2
-    const levelPositionZ = branchWidth / 2;
+    const branch = createBranch(branchWidthOnLevel);
+    const levelPositionY = - treeHeight/2 + (treeHeight * 0.1) + levelNumber/density;
+
+    const levelPositionZ = branchWidthOnLevel / 2;
     branch.position.set(0 ,levelPositionZ, 0);
    
     const rotatableBranch = new Object3D();
     rotatableBranch.add(branch);
-    // branch.add(rightBranch);
     rotatableBranch.position.set(0 ,levelPositionY, 0);
 
     return rotatableBranch;
@@ -37,11 +36,11 @@ const renderBranch = (levelNumber, treeHeight) => {
 //TODO igly i snieg
 //TODO muza
 
-const renderLevel = (levelNumber, treeHeight) => {
+const renderLevel = (levelNumber, maxNumberOfLevels, branchWidth, density, treeHeight) => {
     const groupLevel = new Object3D();
-    const branchesOnLevel = (treeHeight - levelNumber) * 2;
+    const branchesOnLevel = (maxNumberOfLevels - levelNumber) * 2;
     for (let branchNumber = 0; branchNumber < branchesOnLevel; branchNumber++) {
-        let branch = renderBranch(levelNumber, treeHeight);
+        let branch = renderBranch(levelNumber, maxNumberOfLevels, branchWidth, density, treeHeight);
 
         rotateObject(branch, 90,  0, (360/branchesOnLevel) * branchNumber);
         groupLevel.add(branch);
@@ -50,10 +49,11 @@ const renderLevel = (levelNumber, treeHeight) => {
 }
 
 
-export const renderTree = (treeHeight = TREE_HEIGHT) => {
-    const maxNumberOfLevels = treeHeight * LEVELS * 0.9;
+export const renderTree = (treeHeight = 30, branchWidth = 15, density = 4) => {
+    const maxNumberOfLevels = treeHeight * density * 0.9;
+    const trunk = createTrunk(treeHeight);
     for(let treeLevel = 0; treeLevel < maxNumberOfLevels; treeLevel++) {
-        trunk.add(renderLevel(treeLevel, maxNumberOfLevels))
+        trunk.add(renderLevel(treeLevel, maxNumberOfLevels, branchWidth, density, treeHeight))
     }
     return trunk;
 }
